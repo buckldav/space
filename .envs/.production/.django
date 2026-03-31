@@ -1,0 +1,35 @@
+# General
+# ------------------------------------------------------------------------------
+# DJANGO_READ_DOT_ENV_FILE=True
+DJANGO_SETTINGS_MODULE=config.settings.production
+DJANGO_SECRET_KEY=3WoPjqkfdnctPA7ROVPR7kzBniWHZQJDFtWUzvoIi3NuEEenYH0UiA0d5H38LcBt
+DJANGO_ADMIN_URL=SqFLVWnNJDKVnoBPDqJaR6CWZyCHReRU/
+DJANGO_ALLOWED_HOSTS=.space.meritprepacademy.app
+
+# Security
+# ------------------------------------------------------------------------------
+# TIP: better off using DNS, however, redirect is OK too
+DJANGO_SECURE_SSL_REDIRECT=False
+
+# Email
+# ------------------------------------------------------------------------------
+DJANGO_SERVER_EMAIL=
+
+SENDGRID_API_KEY=
+SENDGRID_GENERATE_MESSAGE_ID=True
+SENDGRID_MERGE_FIELD_FORMAT=None
+
+
+# django-allauth
+# ------------------------------------------------------------------------------
+DJANGO_ACCOUNT_ALLOW_REGISTRATION=True
+
+# Gunicorn
+# ------------------------------------------------------------------------------
+WEB_CONCURRENCY=4
+
+
+# Redis
+# ------------------------------------------------------------------------------
+REDIS_URL=redis://redis:6379/0
+
