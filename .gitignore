@@ -273,3 +273,6 @@ space/media/
 .pytest_cache/
 space/static/webpack_bundles/
 webpack-stats.json
+
+# Luke-specific stuff (emacs)
+*~
