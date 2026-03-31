@@ -13,6 +13,21 @@ Moved to [settings](https://cookiecutter-django.readthedocs.io/en/latest/1-getti
 
 ## Basic Commands
 
+### Set Up SQLite Database
+
+This will create a file called `db.sqlite3` in the root of your project directory.
+
+```bash
+uv run python manage.py migrate
+```
+
+If you need to apply changes to the database from your models, make the migrations and execute them.
+
+```bash
+uv run python manage.py makemigrations
+uv run python manage.py migrate
+```
+
 ### Setting Up Your Users
 
 - To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
@@ -22,6 +37,29 @@ Moved to [settings](https://cookiecutter-django.readthedocs.io/en/latest/1-getti
       uv run python manage.py createsuperuser
 
 For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+
+### Run server
+
+In one terminal, run the backend.
+
+```bash
+uv run python manage.py runserver
+```
+
+In another terminal, run the frontend dev server. This is where you can see frontend changes with hot reloading.
+
+```bash
+# install once
+pnpm i
+# run webpack dev server on port 3000
+pnpm run dev:webpack
+```
+
+If you want to build the frontend so that Django has the latest on port 8000, run:
+
+```bash
+pnpm run build
+```
 
 ### Type checks
 
