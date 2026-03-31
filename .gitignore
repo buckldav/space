@@ -274,5 +274,8 @@ space/media/
 space/static/webpack_bundles/
 webpack-stats.json
 
+# Database
+*.sqlite3
+
 # Luke-specific stuff (emacs)
 *~
