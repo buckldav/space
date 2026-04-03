@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Page not found{% endblock title %}
+<style>
+body {
+  background: #140429 !important;
+}</style>
+
+{% block title %}404! {% endblock title %}
 {% block content %}
-  <h1>Page not found</h1>
+  <h1>No page to be found here or there!</h1>
   <p>
     {% if exception %}
       {{ exception }}
@@ -10,4 +15,5 @@
       This is not the page you were looking for.
     {% endif %}
   </p>
+
 {% endblock content %}
