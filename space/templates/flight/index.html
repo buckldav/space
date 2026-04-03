@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	<title>Flight test page</title>
+	<script src="https://cdn.jsdelivr.net/npm/p5@2.2.3/lib/p5.min.js"></script>
+	<style>
+	 * {
+	     background-color: #444444;
+	 }
+	 h1 {
+	     color: #FFFFFF;
+	 }
+	 #p5window {
+	     border-radius: 100px;
+	 }
+	</style>
+    </head>
+    <body>
+	<h1><marquee scrollamount="25" direction="right">This is a test page on /space/templates/flight!</marquee></h1>
+	<div id="p5window">
+	    <script>
+	     function setup() {
+		 createCanvas(windowWidth, windowHeight, WEBGL);
+	     }
+
+	     function draw() {
+		 // Setups & styles
+		 orbitControl();
+		 clear();
+		 background(55,55,55);
+		 fill(44,44,44);
+		 stroke(255,255,255);
+
+		 // sum shapes!
+		 //triangle(20, 25, -20, 25, 0, -20);
+		 beginShape(TRIANGLES);
+		 fill(255,0,0);
+		 vertex(20, 25);
+		 fill(0,0,255);
+		 vertex(-20, 25);
+		 fill(0,255,0);
+		 vertex(0, -20);
+		 endShape(CLOSE);
+	     }
+	    </script>
+	</div>
+    </body>
+</html>
