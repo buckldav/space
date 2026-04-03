@@ -30,17 +30,29 @@
 		 background(55,55,55);
 		 fill(44,44,44);
 		 stroke(255,255,255);
-
+		 strokeWeight(1);
 		 // sum shapes!
+
+		 push();
+		 strokeWeight(0);
+		 translate(0,4,0);
+		 rotate(QUARTER_PI, [0,1,0]);
+		 cone(25, -45, 5, 5);
+		 pop();
 		 //triangle(20, 25, -20, 25, 0, -20);
-		 beginShape(TRIANGLES);
-		 fill(255,0,0);
-		 vertex(20, 25);
-		 fill(0,0,255);
-		 vertex(-20, 25);
-		 fill(0,255,0);
-		 vertex(0, -20);
-		 endShape(CLOSE);
+		 for (let i=0; i<4;i += 1) {
+		     push();
+		     rotate(HALF_PI * i, [0,1,0]);
+		     beginShape(TRIANGLES);
+		     fill(0,255,0);
+		     vertex(20, 25, 20);
+		     fill(255,0,0);
+		     vertex(-20, 25, 20);
+		     fill(0,0,255);
+		     vertex(0, -20, 0);
+		     endShape(CLOSE);
+		     pop();
+		 }
 	     }
 	    </script>
 	</div>
