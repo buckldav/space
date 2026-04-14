@@ -5,10 +5,10 @@
 	<script src="https://cdn.jsdelivr.net/npm/p5@2.2.3/lib/p5.min.js"></script>
 	<style>
 	 * {
-	     background-color: #444444;
+	     background-color: #292a24;
 	 }
 	 h1 {
-	     color: #FFFFFF;
+	     color: #fffae2;
 	 }
 	 #p5window {
 	     border-radius: 100px;
@@ -27,9 +27,9 @@
 		 // Setups & styles
 		 orbitControl();
 		 clear();
-		 background(55,55,55);
+		 background(51,52,46);
 		 fill(44,44,44);
-		 stroke(255,255,255);
+		 stroke(255,250,226);
 		 strokeWeight(1);
 		 // sum shapes!
 
@@ -42,6 +42,9 @@
 		 //triangle(20, 25, -20, 25, 0, -20);
 		 for (let i=0; i<4;i += 1) {
 		     push();
+		     if ((i % 2)==1) {
+			 scale(-1,1);
+		     }
 		     rotate(HALF_PI * i, [0,1,0]);
 		     beginShape(TRIANGLES);
 		     fill(0,255,0);
@@ -51,8 +54,14 @@
 		     fill(0,0,255);
 		     vertex(0, -20, 0);
 		     endShape(CLOSE);
+		     
 		     pop();
 		 }
+		 push();
+		 translate(50, 0, 0);
+		 strokeWeight(0);
+		 cylinder(5, 50);
+		 pop();
 	     }
 	    </script>
 	</div>
