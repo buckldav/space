@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Tasks - Engineer{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="mb-4">tasks</h1>
+            
+            <!-- Filter Form -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Filter & Search</h5>
+                    <form method="get" class="form">
+                        <div class="form-group mb-3">
+                            <label class="form-label"><strong>{{ filter_form.status_filter.label }}</strong></label>
+                            <div class="btn-group" role="group">
+                                {% for value, label in filter_form.status_filter.field.choices %}
+                                    <input 
+                                        type="radio" 
+                                        class="btn-check" 
+                                        name="status_filter" 
+                                        id="id_status_filter_{{ value }}" 
+                                        value="{{ value }}"
+                                        {% if filter_form.status_filter.value == value %}checked{% endif %}
+                                    >
+                                    <label class="btn btn-outline-primary" for="id_status_filter_{{ value }}">
+                                        {{ label }}
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="id_search" class="form-label"><strong>{{ filter_form.search.label }}</strong></label>
+                            {{ filter_form.search }}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                        <a href="{% url 'engineer:task_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Clear Filters
+                        </a>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Task Count -->
+            <div class="alert alert-info" role="alert">
+                Found <strong>{{ task_count }}</strong> task(s)
+            </div>
+
+            <!-- Tasks List -->
+            {% if tasks %}
+                <div class="row">
+                    {% for item in tasks %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        {{ item.task.name }}
+                                        {% if item.task.completed %}
+                                            <span class="badge bg-success ms-2">Completed</span>
+                                        {% else %}
+                                            <span class="badge bg-warning ms-2">Pending</span>
+                                        {% endif %}
+                                    </h5>
+                                    <p class="card-text text-muted small">
+                                        {{ item.task.description }}
+                                    </p>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <div class="form-check">
+                                        <input 
+                                            class="form-check-input" 
+                                            type="checkbox" 
+                                            id="task_{{ item.task.id }}"
+                                            {% if item.task.completed %}checked disabled{% else %}disabled{% endif %}
+                                        >
+                                        <label class="form-check-label" for="task_{{ item.task.id }}">
+                                            Status: {{ item.task.get_completed_display }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-warning" role="alert">
+                    <i class="fas fa-inbox"></i> No tasks found. Try adjusting your filters or search query.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -21,6 +21,8 @@ urlpatterns = [
     # User management
     path("users/", include("space.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
+    # Engineer app
+    path("engineer/", include("engineer.urls", namespace="engineer")),
     # Your stuff: custom urls includes go here
     # ...
     # Media files
