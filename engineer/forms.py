@@ -31,20 +31,11 @@ class TaskViewForm(forms.Form):
 class TaskListDisplayForm(forms.ModelForm):
    class Meta:
         model = Task
-        fields = ['name', 'description', 'completed']
+        fields = ['completed']
         widgets = {
-            'name': forms.TextInput(attrs={
-                'readonly': 'readonly',
-                'class': 'form-control',
-            }),
-            'description': forms.Textarea(attrs={
-                'readonly': 'readonly',
-                'class': 'form-control',
-                'rows': 3,
-            }),
             'completed': forms.CheckboxInput(attrs={
-                'readonly': 'readonly',
-                'disabled': 'disabled',
+                'class': 'form-check-input',
+                'onchange': 'this.form.submit()',
             }),
         }
 

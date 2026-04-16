@@ -3,10 +3,35 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import Task
 from .forms import TaskViewForm, TaskListDisplayForm
+from rest_framework import generics, serializers
+from rest_framework.permissions import IsAdminUser
+
+class  TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = '__all__'
+
+class TaskList(generics.ListAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
 
 
 @login_required
 def task_list_view(request):
+    if request.method == 'POST':
+        task_id = request.POST.get('task_id')
+        if task_id:
+            try:
+                task = Task.objects.get(id=task_id)
+                form = TaskListDisplayForm(request.POST, instance=task)
+                if form.is_valid():
+                    form.save()
+                    # Redirect to preserve GET params
+                    from django.shortcuts import redirect
+                    return redirect(request.get_full_path())
+            except Task.DoesNotExist:
+                pass  # Handle error if needed
+    
     filter_form = TaskViewForm(request.GET or None)
     tasks = Task.objects.all()
     
