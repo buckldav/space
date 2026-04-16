@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<ul>
+{% for c in controls %}
+    <li>{{c.name}} </li>
+{% endfor %}
+</ul>
+{% endblock %}
