@@ -98,6 +98,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "space.users",
+    "tactical",
     "engineer"
     # Your stuff: custom apps go here
 ]
