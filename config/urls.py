@@ -11,6 +11,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 from tactical.views import tactical, phaser_update
 from doctor.views import condition_list
 from communications.views import index as comms
+from sensors.views import sensors
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -29,6 +30,8 @@ urlpatterns = [
     path("conditions/", condition_list),
     # comms
     path("communications/", comms),
+    # sensors
+    path("sensors/", sensors),
     # Your stuff: custom urls includes go here
     # ...
     path("tactical", tactical, name="tactical"),
