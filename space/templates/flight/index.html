@@ -1,69 +1,138 @@
-<!DOCTYPE html>
-<html>
-    <head>
-	<title>Flight test page</title>
-	<script src="https://cdn.jsdelivr.net/npm/p5@2.2.3/lib/p5.min.js"></script>
-	<style>
-	 /* * {
-	    background-color: #292a24;
-	    }
-	    h1 {
-	    color: #fffae2;
-	    }
-	    #p5window {
-	    border-radius: 100px;
-	    } */
-	</style>
-    </head>
-    <body>
-	<h1><marquee scrollamount="25" direction="right">This is a test page on /space/templates/flight!</marquee></h1>
-	<div id="p5window">
-	    <script>
-	     function setup() {
-		 createCanvas(windowWidth, windowHeight, WEBGL);
-	     }
+{% extends "base.html" %}
 
-	     function draw() {
-		 // Setups & styles
-		 orbitControl();
-		 clear();
-		 background(51,52,46);
-		 fill(44,44,44);
-		 stroke(255,250,226);
-		 strokeWeight(1);
-		 // sum shapes!
+{% block javascript %}
 
+<!-- <title>Flight test page</title> -->
+<script src="https://cdn.jsdelivr.net/npm/p5@2.2.3/lib/p5.min.js"></script>
+
+<style>
+ /* * {
+    background-color: #292a24;
+    }
+    h1 {
+    color: #fffae2;
+    }
+    #p5window {
+    border-radius: 100px;
+    } */
+</style>
+
+
+{% endblock %}
+
+{% block body %}
+
+<h1>This is a test page on /space/templates/flight!</h1>
+
+<div id="p5window">
+    <script>     
+     function setup() {
+	 createCanvas(windowWidth, windowHeight, WEBGL);
+	 console.log("P5*JS", p5.VERSION);
+     }
+     
+     function draw() {
+
+	 // Setups & styles
+	 orbitControl();
+	 clear();
+	 background(0);
+	 fill(0);
+	 stroke(255);
+	 strokeWeight(1);
+
+	 // One-way textures
+	 let gl = drawingContext;
+	 
+	 // Enable culling
+	 gl.enable(gl.CULL_FACE);
+	 // Specify which side to cull (BACK or FRONT)
+	 gl.cullFace(gl.FRONT); 
+
+	 // draw ship
+	 drawCone();
+	 drawGuns();
+	 drawBoosters();
+	 
+	 function drawCone() {
+	     // main cone
+	     for (let i=0; i<4;i += 1) {
 		 push();
-		 strokeWeight(0);
-		 translate(0,4,0);
-		 rotate(QUARTER_PI, [0,1,0]);
-		 cone(25, -45, 5, 5);
+
+		 // scale(-1,1); // Semi-Wireframe
+		 rotate(HALF_PI * i, [0,1,0]);
+		 beginShape(TRIANGLES);
+		 //fill(255, 0, 255, 255);
+		 vertex(40, 35, 40);
+		 vertex(-40, 35, 40);
+		 //fill(0, 255, 0, 255);
+		 vertex(0, -60, 0);
+		 endShape(CLOSE);		 
 		 pop();
-		 //triangle(20, 25, -20, 25, 0, -20);
-		 for (let i=0; i<4;i += 1) {
-		     push();
-		     if ((i % 2)==1) {
-			 scale(-1,1);
-		     }
-		     rotate(HALF_PI * i, [0,1,0]);
-		     beginShape(TRIANGLES);
-		     fill(0,255,0);
-		     vertex(20, 25, 20);
-		     fill(255,0,0);
-		     vertex(-20, 25, 20);
-		     fill(0,0,255);
-		     vertex(0, -20, 0);
-		     endShape(CLOSE);
-		     
-		     pop();
-		 }
+	     }
+	     // Bottom cap for ship
+	     push();
+	     noStroke();
+	     translate(0, 35, 0);
+	     rotate(HALF_PI, [1, 0, 0]);
+	     rotate(PI, [0, 1, 0]);
+	     rotate(HALF_PI, [0, 0, 1]);
+	     //fill(255, 0, 255, 255);
+	     plane(80, 80);
+	     pop();
+	 }
+	 function drawGuns() {
+	     gl.enable(gl.CULL_FACE);
+	     // Cylinders for ship
+	     let mirrorFactor = 1;
+	     for (i = 1; i <= 2; i++) {
 		 push();
-		 translate(50, 0, 0);
+		 fill(0, 255);
+		 translate(25 * mirrorFactor, -10, 0);
 		 strokeWeight(0);
 		 cylinder(5, 50);
 		 pop();
+
+		 // Inverse cylinder for cartoonish look
+		 push();
+		 fill(255);
+		 noStroke();
+		 translate(25 * mirrorFactor, -10, 0);
+		 scale(1, -1, 1);
+		 cylinder(6, 52);
+		 pop();
+		 mirrorFactor = mirrorFactor * -1;
 	     }
-	    </script>
-	</div>
-    </body>
-</html>
+	 }
+	 function drawBoosters() {
+	     let mirrorFactor = 1;
+	     for (i = 1; i <= 2; i++) {
+		 push();
+		 fill(0);
+		 translate(20 * mirrorFactor, 35, 0);
+		 stroke(255, 255, 0);
+		 box(30, 10, 30);
+		 
+		 translate(0, -5, 0);
+		 stroke(255,0,0);
+		 //rotate(QUARTER_PI, [0,1,0]);
+		 //cone(20, abs(sin(frameCount * 0.06) * 5 + 40), 5);
+		 for (let j=0; j<4;j += 1) {
+		     push();
+		     rotate(HALF_PI * j, [0,1,0]);
+		     beginShape(TRIANGLES);
+		     vertex(0, abs(sin(frameCount * 0.035) * 3 + 60), 0);
+		     vertex(15, 0, 15);
+		     vertex(-15, 0, 15);
+		     endShape(CLOSE);		 
+		     pop();
+		 }
+		 pop();
+
+		 mirrorFactor = mirrorFactor * -1;
+	     }
+	 }
+     }
+    </script>
+</div>
+{% endblock %}
