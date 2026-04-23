@@ -273,6 +273,7 @@ space/media/
 .pytest_cache/
 space/static/webpack_bundles/
 webpack-stats.json
+package-lock.json
 
 # Database
 *.sqlite3
