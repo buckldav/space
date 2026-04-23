@@ -7,3 +7,6 @@ class IllCondition(models.Model):
 	description=models.TextField()
 	isCompleted=models.BooleanField(default=False)
 	severity=models.IntegerField()
+
+	def __str__(self):
+		return self.name
