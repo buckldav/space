@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Communications{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-5">Cipher Decryption Tools</h1>
+
+        <!-- Caesar Cipher Section -->
+        <div class="cipher-section">
+            <h2>Caesar Cipher Decryption</h2>
+            <form id="caesarForm">
+                <div class="form-group">
+                    <label for="caesarEncrypted">Encrypted Text:</label>
+                    <textarea class="form-control" id="caesarEncrypted" placeholder="Enter encrypted text here..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="caesarShift">Shift Value:</label>
+                    <input type="number" class="form-control" id="caesarShift" placeholder="e.g., 3" min="0" max="25" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Decrypt</button>
+            </form>
+            <div class="output-section" id="caesarOutput"></div>
+        </div>
+
+        <!-- Vigenere Cipher Section -->
+        <div class="cipher-section">
+            <h2>Vigenere Cipher Decryption</h2>
+            <form id="vigenereForm">
+                <div class="form-group">
+                    <label for="vigenereEncrypted">Encrypted Text:</label>
+                    <textarea class="form-control" id="vigenereEncrypted" placeholder="Enter encrypted text here..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="vigenereKeyword">Keyword:</label>
+                    <input type="text" class="form-control" id="vigenereKeyword" placeholder="e.g., SECRET" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Decrypt</button>
+            </form>
+            <div class="output-section" id="vigenereOutput"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Caesar Cipher Decryption
+        function decaesarCipher(text, shift) {
+            return text.replace(/[a-z]/gi, function(char) {
+                const start = char.charCodeAt(0) <= 90 ? 65 : 97;
+                return String.fromCharCode((char.charCodeAt(0) - start - shift + 260) % 26 + start);
+            });
+        }
+
+        // Vigenere Cipher Decryption
+        function decryptVigenere(text, keyword) {
+            keyword = keyword.toUpperCase();
+            let keywordIndex = 0;
+
+            return text.replace(/[a-z]/gi, function(char) {
+                const isUpperCase = char.charCodeAt(0) <= 90;
+                const charCode = isUpperCase ? char.charCodeAt(0) - 65 : char.charCodeAt(0) - 97;
+                const keyChar = keyword[keywordIndex % keyword.length];
+                const keyShift = keyChar.charCodeAt(0) - 65;
+
+                // Move to next keyword character only for alphabetic characters
+                keywordIndex++;
+
+                const decryptedCharCode = (charCode - keyShift + 26) % 26;
+                const start = isUpperCase ? 65 : 97;
+                return String.fromCharCode(decryptedCharCode + start);
+            });
+        }
+
+        // Caesar Form Handler
+        document.getElementById('caesarForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const encrypted = document.getElementById('caesarEncrypted').value;
+            const shift = parseInt(document.getElementById('caesarShift').value);
+
+            if (shift < 0 || shift > 25) {
+                showCaesarOutput('Invalid shift value. Please enter a number between 0 and 25.', 'danger');
+                return;
+            }
+
+            const decrypted = decaesarCipher(encrypted, shift);
+            showCaesarOutput(decrypted, 'info');
+        });
+
+        // Vigenere Form Handler
+        document.getElementById('vigenereForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const encrypted = document.getElementById('vigenereEncrypted').value;
+            const keyword = document.getElementById('vigenereKeyword').value.trim();
+
+            if (!keyword || !/^[a-zA-Z]+$/.test(keyword)) {
+                showVigenereOutput('Invalid keyword. Please enter only letters.', 'danger');
+                return;
+            }
+
+            const decrypted = decryptVigenere(encrypted, keyword);
+            showVigenereOutput(decrypted, 'info');
+        });
+
+        // Display Caesar Output
+        function showCaesarOutput(message, type) {
+            const outputDiv = document.getElementById('caesarOutput');
+            outputDiv.innerHTML = `<div class="alert alert-${type}" role="alert"><strong>Decrypted:</strong> ${escapeHtml(message)}</div>`;
+        }
+
+        // Display Vigenere Output
+        function showVigenereOutput(message, type) {
+            const outputDiv = document.getElementById('vigenereOutput');
+            outputDiv.innerHTML = `<div class="alert alert-${type}" role="alert"><strong>Decrypted:</strong> ${escapeHtml(message)}</div>`;
+        }
+
+        // Escape HTML to prevent injection
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
+</div>
+{% endblock %}
