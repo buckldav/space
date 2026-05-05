@@ -6,10 +6,10 @@ class Phasers(models.Model):
     class Direction(models.TextChoices):
         # The All caps single letter is the DB/backend side words
         # and then the lower case letters that are words are what User Joe sees.
-        UP = "U", "up"      # up way way point up 
-        DOWN = "D", "down"  # down way way point down
-        LEFT = "L", "left"  # left way way point left
-        RIGHT = "R", "right"# right way way point right
+        UP = "U", "Aimed Up"      # up way way point up 
+        DOWN = "D", "Aimed Down"  # down way way point down
+        LEFT = "L", "Aimed Left"  # left way way point left
+        RIGHT = "R", "Aimed Right"# right way way point right
 
     phaser_is_working = models.BooleanField(default=True) # is the phaser working? Yea or nay? 
     direction_fireing = models.CharField(
