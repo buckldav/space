@@ -6,6 +6,8 @@ from .base import REDIS_URL
 from .base import SPECTACULAR_SETTINGS
 from .base import env
 
+WEBHOOK_URL = env("WEBHOOK", default="")
+
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
