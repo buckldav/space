@@ -1,10 +1,110 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Conditions{% endblock %}
 
 {% block content %}
-<h1>Ill Conditions</h1>
-<ol>
-{% for condition in conditions %}
-	<li {% if condition.isCompleted %}style="color: white;"{% else %}style="color: lightcoral;"{% endif %}>{{ condition.name }}</li>
-{% endfor %}
-</ol>
+<div class="container my-5">
+    {% if infected %}
+        <div class="alert alert-danger">
+            Warning: <strong>{{ infected }}%</strong> of crew member(s) are currently infected!
+        </div>
+        <!--progress bar here-->
+        <div class="progress mt-3" style="height: 25px;">
+           <div 
+                class="progress-bar 
+                    {% if infected >= 75 %}
+                        bg-danger
+                    {% elif infected >= 40 %}
+                        bg-warning
+                    {% else %}
+                        bg-success
+                    {% endif %}
+                "
+                role="progressbar"
+                style="width: {{ infected }}%;"
+                aria-valuenow="{{ infected }}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+            >
+                {{ infected }}%
+            </div>
+        </div>
+    {% endif %}
+    <h1 class="mb-4">Conditions</h1>
+
+    <!-- Count -->
+    <div class="alert alert-info">
+        Found <strong>{{ conditions|length }}</strong> condition(s)
+    </div>
+
+    {% if conditions %}
+        <div class="row">
+            {% for condition in conditions %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+    <h5 class="card-title">
+        {{ condition.name }}
+
+        {% if condition.isCompleted %}
+            <span class="badge bg-success ms-2">Completed</span>
+        {% else %}
+            <span class="badge bg-warning ms-2">Pending</span>
+        {% endif %}
+    </h5>
+
+    <p class="card-text text-muted small">
+        {{ condition.description }}
+    </p>
+
+    <!-- Severity -->
+    <p class="mb-0">
+        <strong>Severity:</strong>
+        <span class="
+            {% if condition.severity >= 8 %}
+                text-danger
+            {% elif condition.severity >= 5 %}
+                text-warning
+            {% else %}
+                text-success
+            {% endif %}
+        ">
+            {{ condition.severity }}
+        </span>
+    </p>
+</div>
+
+                        <div class="card-footer bg-transparent">
+                            <div class="form-check">
+                                <input 
+                                    class="form-check-input" 
+                                    type="checkbox"
+                                    {% if condition.isCompleted %}checked disabled{% else %}disabled{% endif %}
+                                >
+                                <label class="form-check-label">
+                                    Status: 
+                                    {% if condition.isCompleted %}
+                                        Completed
+                                    {% else %}
+                                        Pending
+                                    {% endif %}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            No conditions found.
+        </div>
+    {% endif %}
+    <script>
+        setTimeout(() => {
+            window.location.reload();
+        }, 5000);
+    </script>
+</div>
 {% endblock %}
