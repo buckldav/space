@@ -8,6 +8,7 @@ from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
+from tactical.views import tactical, phaser_update
 from doctor.views import condition_list
 from communications.views import index as comms
 
@@ -30,6 +31,8 @@ urlpatterns = [
     path("communications/", comms),
     # Your stuff: custom urls includes go here
     # ...
+    path("tactical", tactical, name="tactical"),
+    path("tactical/phaser/<int:pk>/update", phaser_update, name="phaser-update"),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),

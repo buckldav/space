@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Stuff Tactical{% endblock %}
+
+    tactical_data = {
+        "phasers": ["right", "left"]
+    }
+{% block content %}
+<div class="container my-5">
+
+    <ul>
+    </ul>
+    <table class="table table-dark table-bordered">
+        {% for p in phasers %}
+        <tr>
+            <td>Phaser Functional: {{p.phaser_is_working}}</td>
+            <td>
+                <div>Current: {{ p.get_direction_fireing_display }}</div>
+                <form method="post" action="{% url 'phaser-update' p.pk %}" class="d-flex align-items-center">
+                    {% csrf_token %}
+                    {{ p.form.direction_fireing }}
+                    <button type="submit" class="btn btn-sm btn-primary ms-2">Set</button>
+                </form>
+            </td>
+            </tr>
+        {% endfor %}
+        
+    </table>
+</div>
+
+
+{% endblock %}
