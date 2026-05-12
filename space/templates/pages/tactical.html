@@ -15,7 +15,14 @@
         {% for p in phasers %}
         <tr>
             <td>Phaser Functional: {{p.phaser_is_working}}</td>
-            <td>Phaser Fire Direction: {{p.get_direction_fireing_display}}</td>
+            <td>
+                <div>Current: {{ p.get_direction_fireing_display }}</div>
+                <form method="post" action="{% url 'phaser-update' p.pk %}" class="d-flex align-items-center">
+                    {% csrf_token %}
+                    {{ p.form.direction_fireing }}
+                    <button type="submit" class="btn btn-sm btn-primary ms-2">Set</button>
+                </form>
+            </td>
             </tr>
         {% endfor %}
         
