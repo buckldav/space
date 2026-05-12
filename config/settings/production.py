@@ -76,6 +76,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 # STATIC & MEDIA
 # ------------------------
+"""
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -84,6 +85,7 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+"""
 
 # EMAIL
 # ------------------------------------------------------------------------------
