@@ -4,6 +4,8 @@ from .base import MIDDLEWARE
 from .base import WEBPACK_LOADER
 from .base import env
 
+WEBHOOK_URL = env("WEBHOOK", default="")
+
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug

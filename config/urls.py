@@ -9,6 +9,8 @@ from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
 from tactical.views import tactical, phaser_update
+from doctor.views import condition_list
+from communications.views import index as comms
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -24,6 +26,9 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     # Engineer app
     path("engineer/", include("engineer.urls", namespace="engineer")),
+    path("conditions/", condition_list),
+    # comms
+    path("communications/", comms),
     # Your stuff: custom urls includes go here
     # ...
     path("tactical", tactical, name="tactical"),

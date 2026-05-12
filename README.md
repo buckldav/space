@@ -50,15 +50,15 @@ In another terminal, run the frontend dev server. This is where you can see fron
 
 ```bash
 # install once
-pnpm i
+npm i
 # run webpack dev server on port 3000
-pnpm run dev:webpack
+npm run dev:webpack
 ```
 
 If you want to build the frontend so that Django has the latest on port 8000, run:
 
 ```bash
-pnpm run build
+npm run build
 ```
 
 ### Type checks
