@@ -17,6 +17,12 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["space.meritprepacadem
 
 # DATABASES
 # ------------------------------------------------------------------------------
+DATABASES["default"]["ENGINE"] = "django.db.backends.postgresql"
+DATABASES["default"]["NAME"] = env("DB_DB", default="")
+DATABASES["default"]["USER"] = env("DB_USER", default="")
+DATABASES["default"]["PASSWORD"] = env("DB_PASS", default="")
+DATABASES["default"]["HOST"] = "postgres"
+DATABASES["default"]["PORT"] = "5432"
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)
 
 # CACHES
@@ -64,6 +70,9 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
     "DJANGO_SECURE_CONTENT_TYPE_NOSNIFF",
     default=True,
 )
+CSRF_TRUSTED_ORIGINS = [
+    "https://space.meritprepacademy.app",
+]
 
 # STATIC & MEDIA
 # ------------------------
