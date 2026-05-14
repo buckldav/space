@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-md-12">
             <h1 class="mb-4">tasks</h1>
-            
+
             <!-- Filter Form -->
             <div class="card mb-4">
                 <div class="card-body">
@@ -32,12 +32,12 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        
+
                         <div class="form-group mb-3">
                             <label for="id_search" class="form-label"><strong>{{ filter_form.search.label }}</strong></label>
                             {{ filter_form.search }}
                         </div>
-                        
+
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-search"></i> Search
                         </button>
@@ -90,11 +90,16 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="alert alert-warning" role="alert">
-                    <i class="fas fa-inbox"></i> No tasks found. Try adjusting your filters or search query.
-                </div>
+            <div class="alert alert-warning" role="alert">
+                <i class="fas fa-inbox"></i> No tasks found. Try adjusting your filters or search query.
+            </div>
             {% endif %}
         </div>
     </div>
+    <script>
+        setTimeout(() => {
+            window.location.reload();
+        }, 5000);
+    </script>
 </div>
 {% endblock %}
