@@ -9,6 +9,7 @@ from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
 from tactical.views import tactical, phaser_update
+from inventory.views import inventory, InventoryItem
 from doctor.views import condition_list
 from communications.views import index as comms
 
@@ -32,6 +33,7 @@ urlpatterns = [
     # Your stuff: custom urls includes go here
     # ...
     path("tactical", tactical, name="tactical"),
+    path("inventory", inventory, name="inventory"),
     path("tactical/phaser/<int:pk>/update", phaser_update, name="phaser-update"),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
