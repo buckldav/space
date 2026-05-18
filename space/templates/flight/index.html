@@ -4,47 +4,33 @@
 
 <!-- <title>Flight test page</title> -->
 
-{% load static %}
-
 <script src="https://cdn.jsdelivr.net/npm/p5@2.2.3/lib/p5.min.js"></script>
-
-<style>
- /* * {
-    background-color: #292a24;
-    }
-    h1 {
-    color: #fffae2;
-    }
-    #p5window {
-    border-radius: 100px;
-    } */
-</style>
-
 
 {% endblock %}
 
 {% block body %}
-
+{% load static %}
 <!--<h1>This is a test page on /space/templates/flight!</h1>-->
 
 <div id="p5window">
     <script>     
      const spaceImageUrl = "{% static 'images/space.jpg' %}"
-
+     
      let cam;
      let camlock = true;
      let starList = [];
      let spaceImage;
-     
-     function preload() {
-	 spaceImage = loadImage("/static/images/space.jpg");
-     }
-     
-     function setup() {
+          
+     async function setup() {
+	 spaceImage = await loadImage(spaceImageUrl, 
+				      () => console.log('Image loaded successfully!'), 
+				      (err) => console.error('Failed to load image', err)
+	 );
+
 	 createCanvas(windowWidth, windowHeight, WEBGL);
 	 console.log("P5*JS", p5.VERSION);
-	 console.log(spaceImage);
 
+	 
 	 cam = createCamera();
 
 	 cam.setPosition(0, 0, 800);
@@ -52,7 +38,7 @@
 	 
 	 cam.setPosition(shipX, shipY - 300, shipZ + 200);
 	 cam.lookAt(shipX, shipY, shipZ);
-	 makeStarPositions(500);
+	 makeStarPositions(75);
      }
 
      let shipX = 0;
@@ -73,96 +59,98 @@
 	 fill(0);
 	 stroke(255);
 	 strokeWeight(2);
-	 //frameRate(60);
+	 frameRate(30);
 
 	 if (spaceImage) {
 	     panorama(spaceImage);
 	 } else {
-	     console.log("NO IMAGE!");
+	     //console.log("NO IMAGE!");
 	 }
 	 
-     // One-way textures
-     let gl = drawingContext;
+	 // One-way textures
+	 let gl = drawingContext;
 
-     // Enable culling
-     gl.enable(gl.CULL_FACE);
-     // Specify which side to cull (BACK or FRONT)
-     gl.cullFace(gl.FRONT); 
+	 // Enable culling
+	 gl.enable(gl.CULL_FACE);
+	 // Specify which side to cull (BACK or FRONT)
+	 gl.cullFace(gl.FRONT); 
 
-     // draw ship + autoscroll
-     push();
+	 // draw ship + autoscroll
+	 push();
 
-     
-     
-     push();
-     translate(shipX, shipY - 10, shipZ);
-     rotate(HALF_PI, [1,0,0]);
-     drawCone();
-     drawWindow();
-     gl.enable(gl.CULL_FACE);
-     drawGuns();
-     drawBoosters();
-     pop();
+	 
+	 
+	 push();
+	 translate(shipX, shipY - 10, shipZ);
+	 rotate(HALF_PI, [1,0,0]);
+	 drawCone();
+	 drawWindow();
+	 gl.enable(gl.CULL_FACE);
+	 drawGuns();
+	 drawBoosters();
+	 pop();
 
-     push();
-     noStroke();
-     translate(0, 0, 0);
-     rotate(HALF_PI, [1, 0, 0]);
-     plane(800, 300);
-     fill(255,0,0);
-     translate(0, 0, -1);
-     plane(850, 350);
-     pop();
+	 push();
+	 noStroke();
+	 translate(0, 0, 0);
+	 rotate(HALF_PI, [1, 0, 0]);
+	 fill(0);
+	 plane(800, 300);
+	 fill(255,0,0);
+	 translate(0, 0, -1);
+	 
+	 plane(850, 350);
+	 pop();
 
-     pop();
+	 pop();
 
-     // move camera to ship (don't tell people about camlocks!)
-     if (!camlock) {
-	 //cam.setPosition(shipX, shipY - 200, shipZ + 200);
-	 //cam.lookAt(shipX, shipY, shipZ);
-	 cam.camera(shipX, shipY - 200, shipZ + 200, shipX, shipY, shipZ, 0, 1, 0);
-     } else {
-	 cam.camera(0, -200, 200,   0, 0, 0,  0, 1, 0);
-     }
-     
+	 // move camera to ship (don't tell people about camlocks!)
+	 if (!camlock) {
+	     //cam.setPosition(shipX, shipY - 200, shipZ + 200);
+	     //cam.lookAt(shipX, shipY, shipZ);
+	     cam.camera(shipX, shipY - 200, shipZ + 200, shipX, shipY, shipZ, 0, 1, 0);
+	 } else {
+	     cam.camera(0, -200, 200,   0, 0, 0,  0, 1, 0);
+	 }
+	 
 
-     
-     // draw some meteors
-     push();
-     rotate(shipR, [0,0,1]);
-     //rotate(frameCount * 0.1, [0,0,1]);
-     drawStars(starList);
-     pop();
+	 
+	 // draw some meteors
+	 push();
+	 rotate(shipR, [0,0,1]);
+	 //rotate(frameCount * 0.1, [0,0,1]);
+	 drawStars(starList);
+	 pop();
 
-     if (keyIsDown('w') == true && shipZ >= cam.eyeZ - 300) {
-	 shipZ = shipZ - 8;
-     }
-     if (keyIsDown('a') == true && shipX >= cam.eyeX - 400) {
-	 shipX = shipX - 16;
-     }
-     if (keyIsDown('s') == true && shipZ <= cam.eyeZ - 100) {
-	 shipZ = shipZ + 8;
-     }
-     if (keyIsDown('d') == true && shipX <= cam.eyeX + 400) {
-	 shipX = shipX + 16;
-     }
+	 if (keyIsDown('w') == true && shipZ >= cam.eyeZ - 300) {
+	     shipZ = shipZ - 8;
+	 }
+	 if (keyIsDown('a') == true && shipX >= cam.eyeX - 400) {
+	     shipX = shipX - 16;
+	 }
+	 if (keyIsDown('s') == true && shipZ <= cam.eyeZ - 100) {
+	     shipZ = shipZ + 8;
+	 }
+	 if (keyIsDown('d') == true && shipX <= cam.eyeX + 400) {
+	     shipX = shipX + 16;
+	 }
 
-     if (keyIsDown('q') == true && shipRacceleration >= -0.1) {
-	 shipRacceleration -= 0.02;
-     }
-     if (keyIsDown('e') == true && shipRacceleration <= 0.1) {
-	 shipRacceleration += 0.02;
-     }
+	 if (keyIsDown('q') == true && shipRacceleration >= -0.1) {
+	     shipRacceleration -= 0.02;
+	 }
+	 if (keyIsDown('e') == true && shipRacceleration <= 0.1) {
+	     shipRacceleration += 0.02;
+	 }
 
-     shipR += shipRacceleration;
+	 shipR += shipRacceleration;
 
-     if (shipRacceleration >= 0) {
-	 shipRacceleration -= 0.001;
-     }
-     if (shipRacceleration <= 0) {
-	 shipRacceleration += 0.001;
-     }
-     
+	 if (shipRacceleration >= 0) {
+	     shipRacceleration -= 0.001;
+	 }
+	 if (shipRacceleration <= 0) {
+	     shipRacceleration += 0.001;
+	 }
+	 
      }
 
      function keyPressed() {
@@ -185,13 +173,13 @@
 	     let radius = 50;
 	     let starX = starList[i].x * 500;
  	     let starY = starList[i].y * 500;
-	     let starZ = i * -500 + frameCount * 50 - 10000;
+	     let starZ = i * -500 + frameCount * 50 - 2000;
 
 	     // COLLISIONS DETECT!!!
 	     let d = dist(shipX, shipY, shipZ, starX, starY, starZ);
 
 	     // DIE!!!
-	     if (d < 120) {
+	     if (d < 80) {
 		 die();
 	     }
 	     
@@ -205,10 +193,11 @@
 		 fill(255);
 		 sphere(radius);
 		 pop();
-	     } else if (starList.length >= 2) {
-		 starList.splice(i, 1);
-	     } else {
-		 window.location.href = "/flight/win";
+	     }
+	     push();
+	     if (starZ > (500 * starList.length) || starList == []) {
+		 starList = [];
+		 win();
 	     }
 	 }
      }
@@ -219,14 +208,14 @@
 	 text("U R DIES!", 0, 0);
 	 // add some more efects.
 	 background(255,0,0); //flas red on hits
-	 background(0);
-	 background(255,0,0); //flas red on hits
-	 background(0);
-	 background(255,0,0); //flas red on hits
-	 background(0);
+	 setTimeout(100);
 
-	 setTimeout(10);
 	 window.location.href = "/flight/contentkeeper";
+     }
+     function win() {
+	 console.log("YOUR WINNAR!");
+	 setTimeout(10);
+	 window.location.href = "/flight/win";    
      }
      
      function drawCone() {
