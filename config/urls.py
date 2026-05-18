@@ -8,6 +8,7 @@ from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
+from flight.views import testview, contentkeeperview, winview
 from tactical.views import tactical, phaser_update
 from inventory.views import inventory, InventoryItem
 from doctor.views import condition_list
@@ -23,6 +24,10 @@ urlpatterns = [
     ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
+    # Flight
+    path("flight/", testview),
+    path("flight/contentkeeper/", contentkeeperview),
+    path("flight/win/", winview),
     # User management
     path("users/", include("space.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),

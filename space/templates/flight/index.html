@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+
+{% block javascript %}
+
+<!-- <title>Flight test page</title> -->
+
+<script src="https://cdn.jsdelivr.net/npm/p5@2.2.3/lib/p5.min.js"></script>
+
+{% endblock %}
+
+{% block body %}
+{% load static %}
+<!--<h1>This is a test page on /space/templates/flight!</h1>-->
+
+<div id="p5window">
+    <script>     
+     const spaceImageUrl = "{% static 'images/space.jpg' %}"
+     
+     let cam;
+     let camlock = true;
+     let starList = [];
+     let spaceImage;
+          
+     async function setup() {
+	 spaceImage = await loadImage(spaceImageUrl, 
+				      () => console.log('Image loaded successfully!'), 
+				      (err) => console.error('Failed to load image', err)
+	 );
+
+	 createCanvas(windowWidth, windowHeight, WEBGL);
+	 console.log("P5*JS", p5.VERSION);
+
+	 
+	 cam = createCamera();
+
+	 cam.setPosition(0, 0, 800);
+	 cam.lookAt(0,0,0);
+	 
+	 cam.setPosition(shipX, shipY - 300, shipZ + 200);
+	 cam.lookAt(shipX, shipY, shipZ);
+	 makeStarPositions(75);
+     }
+
+     let shipX = 0;
+     let shipY = 0;
+     let shipZ = 0;
+     let shipR = 0;
+     let shipRacceleration = 0;
+     
+     function draw() {
+
+	 // Setups & styles
+
+	 setCamera(cam);
+	 frustum(-0.1 * windowWidth, 0.1 * windowWidth, -0.1 * windowHeight, 0.1 * windowHeight, 50, 4000);
+	 orbitControl();
+	 //clear();
+	 background(0);
+	 fill(0);
+	 stroke(255);
+	 strokeWeight(2);
+	 frameRate(30);
+
+	 if (spaceImage) {
+	     panorama(spaceImage);
+	 } else {
+	     //console.log("NO IMAGE!");
+	 }
+	 
+	 // One-way textures
+	 let gl = drawingContext;
+
+	 // Enable culling
+	 gl.enable(gl.CULL_FACE);
+	 // Specify which side to cull (BACK or FRONT)
+	 gl.cullFace(gl.FRONT); 
+
+	 // draw ship + autoscroll
+	 push();
+
+	 
+	 
+	 push();
+	 translate(shipX, shipY - 10, shipZ);
+	 rotate(HALF_PI, [1,0,0]);
+	 drawCone();
+	 drawWindow();
+	 gl.enable(gl.CULL_FACE);
+	 drawGuns();
+	 drawBoosters();
+	 pop();
+
+	 push();
+	 noStroke();
+	 translate(0, 0, 0);
+	 rotate(HALF_PI, [1, 0, 0]);
+	 fill(0);
+	 plane(800, 300);
+	 fill(255,0,0);
+	 translate(0, 0, -1);
+	 
+	 plane(850, 350);
+	 pop();
+
+	 pop();
+
+	 // move camera to ship (don't tell people about camlocks!)
+	 if (!camlock) {
+	     //cam.setPosition(shipX, shipY - 200, shipZ + 200);
+	     //cam.lookAt(shipX, shipY, shipZ);
+	     cam.camera(shipX, shipY - 200, shipZ + 200, shipX, shipY, shipZ, 0, 1, 0);
+	 } else {
+	     cam.camera(0, -200, 200,   0, 0, 0,  0, 1, 0);
+	 }
+	 
+
+	 
+	 // draw some meteors
+	 push();
+	 rotate(shipR, [0,0,1]);
+	 //rotate(frameCount * 0.1, [0,0,1]);
+	 drawStars(starList);
+	 pop();
+
+	 if (keyIsDown('w') == true && shipZ >= cam.eyeZ - 300) {
+	     shipZ = shipZ - 8;
+	 }
+	 if (keyIsDown('a') == true && shipX >= cam.eyeX - 400) {
+	     shipX = shipX - 16;
+	 }
+	 if (keyIsDown('s') == true && shipZ <= cam.eyeZ - 100) {
+	     shipZ = shipZ + 8;
+	 }
+	 if (keyIsDown('d') == true && shipX <= cam.eyeX + 400) {
+	     shipX = shipX + 16;
+	 }
+
+	 if (keyIsDown('q') == true && shipRacceleration >= -0.1) {
+	     shipRacceleration -= 0.02;
+	 }
+	 if (keyIsDown('e') == true && shipRacceleration <= 0.1) {
+	     shipRacceleration += 0.02;
+	 }
+
+	 shipR += shipRacceleration;
+
+	 if (shipRacceleration >= 0) {
+	     shipRacceleration -= 0.001;
+	 }
+	 if (shipRacceleration <= 0) {
+	     shipRacceleration += 0.001;
+	 }
+	 
+     }
+
+     function keyPressed() {
+	 if (key === 'k' && !camlock) {
+	     camlock = true;
+	 } else if (key === 'k' && camlock) {
+	     camlock = false;
+	 }
+     }
+     
+     function makeStarPositions(amount) {
+	 for (i=0;i<amount;i++) {
+	     starList.push(createVector(random(-1,1), random(-1,1)));
+	 }
+	 console.log(starList);
+     }
+
+     function drawStars() {
+	 for (i=0; i<starList.length; i++) {
+	     let radius = 50;
+	     let starX = starList[i].x * 500;
+ 	     let starY = starList[i].y * 500;
+	     let starZ = i * -500 + frameCount * 50 - 2000;
+
+	     // COLLISIONS DETECT!!!
+	     let d = dist(shipX, shipY, shipZ, starX, starY, starZ);
+
+	     // DIE!!!
+	     if (d < 80) {
+		 die();
+	     }
+	     
+	     if (starZ < 1000) {
+		 push();
+		 pointLight(255,255,255,shipX,shipY,shipZ);
+		 ambientMaterial(255);
+		 noStroke();
+		 fill(255);
+		 translate(starX, starY, starZ);
+		 fill(255);
+		 sphere(radius);
+		 pop();
+	     }
+	     push();
+	     if (starZ > (500 * starList.length) || starList == []) {
+		 starList = [];
+		 win();
+	     }
+	 }
+     }
+
+     function die() {
+	 console.log("U R DED!");
+	 textFont('/static/fonts/EdgeOfTheGalaxyItalic-ZVJB3.otf');
+	 text("U R DIES!", 0, 0);
+	 // add some more efects.
+	 background(255,0,0); //flas red on hits
+	 setTimeout(100);
+
+	 window.location.href = "/flight/contentkeeper";
+     }
+     function win() {
+	 console.log("YOUR WINNAR!");
+	 setTimeout(10);
+	 window.location.href = "/flight/win";    
+     }
+     
+     function drawCone() {
+	 // main cone
+	 for (let i=0; i<4;i += 1) {
+	     push();
+
+	     // scale(-1,1); // Semi-Wireframe
+	     rotate(HALF_PI * i, [0,1,0]);
+	     beginShape(TRIANGLES);
+	     //fill(255, 0, 255, 255);
+	     vertex(40, 35, 40);
+	     vertex(-40, 35, 40);
+	     //fill(0, 255, 0, 255);
+	     vertex(0, -70, 0);
+	     endShape(CLOSE);		 
+	     pop();
+	 }
+	 // Bottom cap for ship
+	 push();
+	 noStroke();
+	 translate(0, 35, 0);
+	 rotate(HALF_PI, [1, 0, 0]);
+	 rotate(PI, [0, 1, 0]);
+	 rotate(HALF_PI, [0, 0, 1]);
+	 //fill(255, 0, 255, 255);p
+	 plane(80, 80);
+	 pop();
+     }
+     function drawWindow() {
+	 
+	 push();
+	 noStroke();
+	 fill(0);
+	 translate(0,0,20);
+	 rotate(HALF_PI, [1,0,0]);
+	 cylinder(14,19,30);
+	 pop();
+	 
+	 push();
+	 noStroke();
+	 fill(255);
+	 translate(0,0,25);
+	 rotate(HALF_PI, [1,0,0]);
+	 scale(1,-1,1);
+	 cylinder(16,12,30);
+	 pop();
+     }
+     function drawGuns() {
+	 
+	 // Cylinders for ship
+	 let mirrorFactor = 1;
+	 for (i = 1; i <= 2; i++) {
+	     push();
+	     fill(0, 255);
+	     translate(25 * mirrorFactor, -10, 0);
+	     strokeWeight(0);
+	     cylinder(5, 50);
+	     pop();
+
+	     // Inverse cylinder for cartoonish look
+	     push();
+	     fill(255);
+	     noStroke();
+	     translate(25 * mirrorFactor, -10, 0);
+	     scale(1, -1, 1);
+	     cylinder(6, 52);
+	     pop();
+	     mirrorFactor = mirrorFactor * -1;
+	 }
+     }
+     function drawBoosters() {
+
+	 let mirrorFactor = 1;
+	 for (i = 1; i <= 2; i++) {
+	     push();
+	     fill(0);
+	     translate(20 * mirrorFactor, 35, 0);
+	     stroke(255, 255, 0);
+	     box(30, 10, 30);
+	     
+	     translate(0, -5, 0);
+	     let c = color('red');
+	     ambientLight(c);
+	     stroke(255,0,0);
+	     //rotate(QUARTER_PI, [0,1,0]);
+	     //cone(20, abs(sin(frameCount * 0.06) * 5 + 40), 5);
+	     for (let j=0; j<4;j += 1) {
+		 push();
+		 rotate(HALF_PI * j, [0,1,0]);
+		 beginShape(TRIANGLES);
+		 vertex(0, abs(sin(frameCount * 0.25) * 3 + 60), 0);
+		 vertex(15, 0, 15);
+		 vertex(-15, 0, 15);
+		 endShape(CLOSE);
+		 ambientLight(20);
+		 spotLight(255,0,0,
+			   0,100,0,
+			   0,0,0,
+			   PI/3);
+		 pop();
+	     }
+	     pop();
+	     
+	     mirrorFactor = mirrorFactor * -1;
+	 }
+     }
+    </script>
+</div>
+{% endblock %}
