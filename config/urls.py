@@ -9,6 +9,11 @@ from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
 from flight.views import testview, contentkeeperview, winview
+from tactical.views import tactical, phaser_update
+from inventory.views import inventory, InventoryItem
+from doctor.views import condition_list
+from communications.views import index as comms
+from sensors.views import sensors
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -26,8 +31,18 @@ urlpatterns = [
     # User management
     path("users/", include("space.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
+    # Engineer app
+    path("engineer/", include("engineer.urls", namespace="engineer")),
+    path("conditions/", condition_list),
+    # comms
+    path("communications/", comms),
+    # sensors
+    path("sensors/", sensors),
     # Your stuff: custom urls includes go here
     # ...
+    path("tactical", tactical, name="tactical"),
+    path("inventory", inventory, name="inventory"),
+    path("tactical/phaser/<int:pk>/update", phaser_update, name="phaser-update"),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),

@@ -4,10 +4,12 @@ from .base import MIDDLEWARE
 from .base import WEBPACK_LOADER
 from .base import env
 
+WEBHOOK_URL = env("WEBHOOK", default="")
+
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = True
+DEBUG = False
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env(
     "DJANGO_SECRET_KEY",
